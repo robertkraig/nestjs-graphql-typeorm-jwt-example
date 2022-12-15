@@ -1,0 +1,71 @@
+### Login
+GRAPHQL http://localhost:3000/graphql
+
+mutation Login($username: String!, $password: String!) {
+    signIn(password: $password, username: $username ) {
+        Token
+        User {
+            id
+            username
+            role
+            isAdmin
+        }
+    }
+}
+
+{
+  "username": "developer",
+  "password": "developer"
+}
+
+> {%
+  client.global.set("Authorization", response.body['data']['signIn']['Token']);
+%}
+
+### Create Task
+GRAPHQL http://localhost:3000/graphql
+Authorization: Bearer {{Authorization}}
+
+mutation CreatedTask {
+  createTask(input: {
+      name: "Task1",
+      description: "Description One",
+      taskStatus: NEW
+  }) {
+     id
+     taskStatus
+     name
+     description
+     user {
+       id
+       username
+     }
+  }
+}
+
+> {%
+  client.global.set("taskId", response.body['data']['createTask']['id']);
+%}
+
+### Query Task
+GRAPHQL http://localhost:3000/graphql
+Authorization: Bearer {{Authorization}}
+
+query ReadTask ($taskId: String!){
+    findOneTask(id: $taskId) {
+       id
+       name
+       taskStatus
+       description
+       createdAt
+       user {
+          id
+          username
+          fullname
+       }
+    }
+}
+
+{
+  "taskId": "{{taskId}}"
+}

@@ -1,0 +1,87 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type RoleObject {
+  id: ID!
+  name: String!
+  isAdmin: Boolean!
+}
+
+type UserObject {
+  id: ID!
+  username: String!
+  password: String!
+  fullname: String!
+  role: RoleObject
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  tasks: [TaskObject!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type TaskObject {
+  id: ID!
+  name: String!
+  description: String!
+  dueDate: String!
+  taskStatus: TaskStatuses!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: UserObject!
+}
+
+enum TaskStatuses {
+  NEW
+  COMPLETED
+}
+
+type UserPayload {
+  id: String!
+  username: String!
+  role: String!
+  isAdmin: Boolean!
+}
+
+type AuthObject {
+  Token: String!
+  User: UserPayload!
+}
+
+type Query {
+  findAllTasks: [TaskObject!]!
+  findOneTask(id: String!): TaskObject!
+  findAllUsers: [UserObject!]!
+}
+
+type Mutation {
+  createTask(input: CreateTaskInput!): TaskObject!
+  updateTask(input: UpdateTaskInput!): TaskObject!
+  signIn(username: String!, password: String!): AuthObject!
+  signUp(data: CreateUserInput!): AuthObject!
+}
+
+input CreateTaskInput {
+  name: String!
+  description: String
+  taskStatus: TaskStatuses
+  dueDate: DateTime
+}
+
+input UpdateTaskInput {
+  id: ID!
+  name: String!
+  description: String
+  taskStatus: TaskStatuses!
+  dueDate: DateTime!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  fullname: String!
+}
